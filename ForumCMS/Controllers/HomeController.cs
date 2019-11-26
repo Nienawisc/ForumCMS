@@ -12,5 +12,9 @@ namespace ForumCMS.Controllers
         {
             return View();
         }
+        public ActionResult Logowanie()
+        {
+            return View();
+        }
     }
 }
