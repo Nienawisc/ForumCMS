@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29123.88
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ForumCMS", "ForumCMS\ForumCMS.csproj", "{418FC94A-90E8-46AC-9C8C-D57F75DAB931}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ForumCMS.Tests", "ForumCMS.Tests\ForumCMS.Tests.csproj", "{DE996A54-99C6-4502-A137-456C1D5E9BDB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{418FC94A-90E8-46AC-9C8C-D57F75DAB931}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{418FC94A-90E8-46AC-9C8C-D57F75DAB931}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{418FC94A-90E8-46AC-9C8C-D57F75DAB931}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{418FC94A-90E8-46AC-9C8C-D57F75DAB931}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DE996A54-99C6-4502-A137-456C1D5E9BDB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DE996A54-99C6-4502-A137-456C1D5E9BDB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DE996A54-99C6-4502-A137-456C1D5E9BDB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DE996A54-99C6-4502-A137-456C1D5E9BDB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {080AF5B0-26F7-45C2-81A8-C69CB4054187}
+	EndGlobalSection
+EndGlobal
