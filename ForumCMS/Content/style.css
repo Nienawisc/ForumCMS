@@ -1,0 +1,117 @@
+﻿h4 {
+    font-weight: 100;
+    color: #000;
+}
+
+
+
+table#forum {
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+
+
+#forum th {
+    padding: 12px;
+    background-color: #e3000f !important;
+}
+
+
+
+#forum td a span {
+    background: #455e71;
+    color: #fff;
+    font-size: 0.8em;
+    padding: 4px;
+}
+
+
+
+.pagination .active a, .pagination .active a:hover {
+    background: #e3000f;
+    border-color: #e3000f;
+}
+
+
+
+.pagination li a {
+    color: #000;
+}
+
+
+
+h2 {
+    font-size: 1.2em;
+}
+
+
+
+    h2 a {
+        color: #5f7e93;
+    }
+
+
+
+td {
+    vertical-align: top;
+}
+
+
+
+div.time {
+    font-size: 0.8em;
+    color: #808080;
+    margin-bottom: 8px;
+}
+
+
+
+img.avatar {
+    max-width: 100px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 10px;
+    margin-top: 10px;
+    border-radius: 100px;
+}
+
+
+
+a#nowyTemat {
+    background: #e3000f;
+    color: #fff;
+    padding: 7px 8px;
+    font-size: 0.9em;
+    float: right;
+    margin-top: -30px;
+    margin-bottom: 10px;
+}
+
+a#odpowiedz {
+    background: #e3000f;
+    color: #fff;
+    padding: 7px 8px;
+    font-size: 0.9em;
+    float: right;
+    margin-top: 10px;
+}
+
+img.hlogo {
+    float: right;
+    max-height: 35px;
+}
+
+.wyrownajDoPrawej {
+    text-align: right;
+}
+
+.klient {
+    color: #888;
+    font-size: 0.75em;
+    text-align: center;
+}
+
+.uzytkownik {
+    text-align: center;
+    margin-bottom: 3px;
+}
