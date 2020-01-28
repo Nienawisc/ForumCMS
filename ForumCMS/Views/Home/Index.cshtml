@@ -1,4 +1,6 @@
-﻿@{
+﻿@using ForumCMS.Models;
+@model List<ForumCMS.Models.Kategoria>
+@{
     ViewBag.Title = "Forum";
 }
 
@@ -30,12 +32,61 @@
         </thead>
 
         <tbody>
-            <tr>
-                <td>Lol</td>
-                <td>Wojtek jest słabszy od Roberta</td>
-                <td>Tak?</td>
-                <td>No jasne</td>
-            </tr>
+            @foreach (var item in Model.OrderBy(x=>x.kolejnosc))
+            {
+                if ((bool)item.aktywna || Session["Admin"] != null)
+                {
+                    Temat t = item.Temat.Where(x => x.status != 0).OrderByDescending(x => x.Post.OrderByDescending(y => y.czas)).FirstOrDefault();
+                    Post ostatni = null;
+                    if(t!=null)
+                    {
+                        ostatni = t.Post.OrderByDescending(y => y.czas).FirstOrDefault();
+                    }
+                    <tr>
+                        <td>
+                            @if (Session["Admin"] != null)
+                            {
+                                <div class="admin_tools" style="float:right">
+                                    @Html.ActionLink("Edit", "EditAdmin", new { id = item.id })
+                                </div>
+                            }
+                            @if ((bool)item.tylko_dla_zalogowanych)
+                            {
+                                if (Session["UserId"] != null)
+                                {
+                                    <a href='@Url.Action("Index", "forum_tematy", new { id = item.id, page = 1 })'>
+                                        <h4>@item.nazwa</h4><br />
+                                    </a>
+                                }
+                                else
+                                {
+                                    <a href='@Url.Action("Index", "Login", null)'>
+                                        <h4>X @item.nazwa</h4><br />
+                                    </a>
+                                }
+                            }
+                            else
+                            {
+                                <a href='@Url.Action("Index", "forum_tematy", new { id = item.id, page = 1 })'>
+                                    <h4>@item.nazwa</h4>
+                                </a>
+                            }
+
+
+                            <div class="opisKategorii">@Html.DisplayFor(modelItem => item.opis)</div>
+                        </td>
+                        <td class="wyrownajDoPrawej hidden-xs">
+                            @item.Temat.Where(x => x.status != 0).Count()
+                        </td>
+                        <td class="wyrownajDoPrawej hidden-xs">
+                            @item.Temat.Where(x => x.status != 0).Sum(x => x.Post.Where(y => y.status != 0).Count())
+                        </td>
+                        <td class="hidden-xs">
+                            @Html.Raw(ostatni != null ? $"{ostatni.czas}<br/>Autor: {ostatni.User.login}" : $"Brak wypowiedzi\n")
+                        </td>
+                    </tr>
+                }
+            }
         </tbody>
 
     </table>
