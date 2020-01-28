@@ -194,6 +194,9 @@
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
     <Content Include="img\logo.png" />
+    <Content Include="media\3.jpg" />
+    <Content Include="media\4.jpg" />
+    <Content Include="media\5.jpg" />
     <Content Include="Models\Model.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Model.cs</LastGenOutput>
@@ -286,6 +289,8 @@
     <Content Include="Views\Home\AdminEdytujKategorie.cshtml" />
     <Content Include="Views\Home\AdminUtworzKategorie.cshtml" />
     <Content Include="Views\Home\AdminEdytujTemat.cshtml" />
+    <Content Include="Views\Home\AdminEditPost.cshtml" />
+    <Content Include="Views\Home\EditPost.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -25,7 +25,7 @@
             <tr>
                 <td class="hidden-xs">
                     @{ //zdjecie uzytkownika
-                        <img src="https://www.thispersondoesnotexist.com/image" class="avatar" style="display:block; width:100%; height:auto;">
+                        <img src="~/media/@(item.idAutora).jpg" class="avatar" style="display:block; width:100%; height:auto;">
                     }
                     <p class="uzytkownik">@Html.DisplayFor(modelItem => item.User.login)</p>
                 </td>
@@ -36,12 +36,12 @@
                         {
                             if ((int)Session["User"] == item.User.id)
                             {
-                                @Html.ActionLink("Edytuj ", "Edit", new { id = item.id }, new { @id = "editPost" })
+                                @Html.ActionLink("Edytuj ", "EditPost", new { id = item.id }, new { @id = "editPost" })
                             }
                         }
                         @if (Session["Admin"] != null)//Edycja postów
                         {
-                            @Html.ActionLink("Edytuj(Admin)", "EditAdmin", new { id = item.id })
+                            @Html.ActionLink("Edytuj(Admin)", "AdminEditPost", new { id = item.id })
                         }
                     </div>
                     <div><p>@Html.Raw(item.tresc)</p></div>
@@ -67,6 +67,10 @@
         if (this.ViewContext.RouteData.Values["page"] == null)
         {
             page = 1;
+            if (this.Request.QueryString["page"] != null)
+            {
+                page = Int32.Parse(this.Request.QueryString["page"].ToString());
+            }
         }
         else
         {
@@ -88,7 +92,7 @@
 @if (pagedlist != null)
 {
     <p>Strona @(pagedlist.PageCount < pagedlist.PageNumber ? 0 : pagedlist.PageNumber) z @pagedlist.PageCount</p>
-    @Html.PagedListPager(pagedlist, page => Url.Action("Index", new { page }), new PagedListRenderOptions
+    @Html.PagedListPager(pagedlist, page => Url.Action("TematSzczegoly", new { page }), new PagedListRenderOptions
     {
                          DisplayLinkToFirstPage = PagedListDisplayMode.Always,
                          DisplayLinkToLastPage = PagedListDisplayMode.Always,

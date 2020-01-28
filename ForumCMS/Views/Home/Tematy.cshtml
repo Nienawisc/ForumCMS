@@ -114,7 +114,7 @@
         if (Request["search"] != null)
         {
             <p>Strona @(pagedlist.PageCount < pagedlist.PageNumber ? 0 : pagedlist.PageNumber) z @pagedlist.PageCount</p>
-            @Html.PagedListPager(pagedlist, page => Url.Action("Index", new { page, search = Request["search"] }), new PagedListRenderOptions
+            @Html.PagedListPager(pagedlist, page => Url.Action("Tematy", new { page, search = Request["search"] }), new PagedListRenderOptions
         {
             DisplayLinkToFirstPage = PagedListDisplayMode.Always,
             DisplayLinkToLastPage = PagedListDisplayMode.Always,
@@ -127,7 +127,7 @@
         else
         {
             <p>Strona @(pagedlist.PageCount < pagedlist.PageNumber ? 0 : pagedlist.PageNumber) z @pagedlist.PageCount</p>
-            @Html.PagedListPager(pagedlist, page => Url.Action("Index", new { page }), new PagedListRenderOptions
+            @Html.PagedListPager(pagedlist, page => Url.Action("Tematy", new { page }), new PagedListRenderOptions
         {
             DisplayLinkToFirstPage = PagedListDisplayMode.Always,
             DisplayLinkToLastPage = PagedListDisplayMode.Always,

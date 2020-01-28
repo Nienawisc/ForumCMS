@@ -36,7 +36,7 @@
             {
                 if ((bool)item.aktywna || Session["Admin"] != null)
                 {
-                    Temat t = item.Temat.Where(x => x.status != 0).OrderByDescending(x => x.Post.OrderByDescending(y => y.czas).FirstOrDefault().czas).FirstOrDefault();
+                    Temat t = item.Temat.Where(x => x.status != 1).OrderByDescending(x => x.Post.OrderByDescending(y => y.czas).FirstOrDefault().czas).FirstOrDefault();
                     Post ostatni = null;
                     if(t!=null)
                     {
@@ -76,10 +76,10 @@
                             <div class="opisKategorii">@Html.DisplayFor(modelItem => item.opis)</div>
                         </td>
                         <td class="wyrownajDoPrawej hidden-xs">
-                            @item.Temat.Where(x => x.status != 0).Count()
+                            @item.Temat.Where(x => x.status != 1).Count()
                         </td>
                         <td class="wyrownajDoPrawej hidden-xs">
-                            @item.Temat.Where(x => x.status != 0).Sum(x => x.Post.Where(y => y.status != 0).Count())
+                            @item.Temat.Where(x => x.status != 1).Sum(x => x.Post.Where(y => y.status != 1).Count())
                         </td>
                         <td class="hidden-xs">
                             @Html.Raw(ostatni != null ? $"{ostatni.czas}<br/>Autor: {ostatni.User.login}" : $"Brak wypowiedzi\n")

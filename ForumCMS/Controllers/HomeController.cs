@@ -22,7 +22,7 @@ namespace ForumCMS.Controllers
         }
         public ActionResult Tematy(int id, string search=null, int page=1)
         {
-            if (!czyIstniejeKategoria(id)) return RedirectToAction("Index", "Login");
+            if (!czyIstniejeKategoria(id)) return RedirectToAction("Index");
 
             ViewBag.pagination = paginationLimit;
 
@@ -96,7 +96,7 @@ namespace ForumCMS.Controllers
                 db.SaveChanges();
 
                 ViewBag.Kategoria = temat.Kategoria.nazwa;
-                return RedirectToAction("TematSzczegoly", (new { id = id }));
+                return RedirectToAction("TematSzczegoly", new { id = temat.id });
             }
 
             return View();
@@ -113,7 +113,7 @@ namespace ForumCMS.Controllers
         }
         public ActionResult TematSzczegoly(int? id, int page = 1)
         {
-            if (!czyIstniejeTemat(id)) return RedirectToAction("Index", "Login");
+            if (!czyIstniejeTemat(id)) return RedirectToAction("Index");
             var forum_posty = db.Temat.Find(id).Post.Where(x => x.status > 1);
             if (forum_posty == null)
             {
@@ -165,7 +165,7 @@ namespace ForumCMS.Controllers
                 db.Post.Add(forum_posty);
                 db.SaveChanges();
 
-                return RedirectToAction("Index", new { id = forum_posty.idT });
+                return RedirectToAction("TematSzczegoly", new { id = forum_posty.idT });
 
             }
             ViewBag.Temat = forum_posty.Temat.nazwa;
@@ -271,6 +271,9 @@ namespace ForumCMS.Controllers
             {
                 return HttpNotFound();
             }
+            ViewBag.idK = new SelectList(db.Kategoria, "id", "nazwa", forum_tematy.idK);
+            ViewBag.uid = new SelectList(db.User, "id", "login", forum_tematy.idAutora);
+            ViewBag.status = new SelectList(db.Status, "id", "nazwa", forum_tematy.status);
             ViewBag.Kategoria = forum_tematy.Kategoria.nazwa;
             return View(forum_tematy);
         }
@@ -280,19 +283,124 @@ namespace ForumCMS.Controllers
         // Aby uzyskać więcej szczegółów, zobacz https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult AdminEdytujTemat([Bind(Include = "id,temat,czas,lid,status,odslony,katid")] Temat forum_tematy)
+        public ActionResult AdminEdytujTemat([Bind(Include = "id,nazwa,czas,idAutora,status,odslony,idK")] Temat forum_tematy)
         {
             if (Session["Admin"] == null) return RedirectToAction("Index");
             if (ModelState.IsValid)
             {
                 db.Entry(forum_tematy).State = EntityState.Modified;
                 db.SaveChanges();
-                return RedirectToAction("Index", new { id = forum_tematy.idK });
+                return RedirectToAction("Tematy", new { id = forum_tematy.idK });
             }
+            ViewBag.katid = new SelectList(db.Kategoria, "id", "nazwa", forum_tematy.idK);
+            ViewBag.uid = new SelectList(db.User, "id", "imie", forum_tematy.idAutora);
+            ViewBag.status = new SelectList(db.Status, "id", "nazwa", forum_tematy.status);
             ViewBag.Kategoria = forum_tematy.Kategoria.nazwa;
             return View(forum_tematy);
         }
 
+        // GET: forum_posty/Edit/5
+        public ActionResult EditPost(int? id)
+        {
+            if (!czyZalogowany()) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Post forum_posty = db.Post.Find(id);
+            if (forum_posty == null)
+            {
+                return HttpNotFound();
+            }
+            if ((int)Session["User"] != forum_posty.idAutora) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            ViewBag.tid = new SelectList(db.Temat, "id", "temat", forum_posty.idT);
+            ViewBag.uid = new SelectList(db.User, "id", "login", forum_posty.idAutora);
+            ViewBag.Temat = forum_posty.Temat.nazwa;
+            return View(forum_posty);
+        }
+
+        // POST: forum_posty/Edit/5
+        // Aby zapewnić ochronę przed atakami polegającymi na przesyłaniu dodatkowych danych, włącz określone właściwości, z którymi chcesz utworzyć powiązania.
+        // Aby uzyskać więcej szczegółów, zobacz https://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult EditPost([Bind(Include = "id,tresc,idAutora,czas,status,idT")] Post forum_posty)
+        {
+            if (!czyZalogowany()) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+
+            forum_posty.id = Int32.Parse(Session["changingPostId"].ToString());
+            forum_posty.idT = Int32.Parse(Session["changingPostTid"].ToString());
+            forum_posty.czas = DateTime.Parse(Session["changingPostCzas"].ToString());
+            forum_posty.status = short.Parse(Session["changingPostStatus"].ToString());
+            forum_posty.idAutora = Int32.Parse(Session["changingPostUid"].ToString());
+
+            forum_posty.czas_edycji = DateTime.Now;
+            if (ModelState.IsValid)
+            {
+                db.Entry(forum_posty).State = EntityState.Modified;
+                db.SaveChanges();
+                //czyszczenie wartosci sesji:
+                Session["changingPostId"] = null;
+                Session["changingPostTid"] = null;
+                Session["changingPostCzas"] = null;
+                Session["changingPostStatus"] = null;
+                Session["changingPostUid"] = null;
+                return RedirectToAction("TematSzczegoly", new { id = forum_posty.idT });
+            }
+
+
+            //czyszczenie wartosci sesji:
+            Session["changingPostId"] = null;
+            Session["changingPostTid"] = null;
+            Session["changingPostCzas"] = null;
+            Session["changingPostStatus"] = null;
+            Session["changingPostUid"] = null;
+
+            ViewBag.Temat = forum_posty.Temat.nazwa;
+            ViewBag.tid = new SelectList(db.Temat, "id", "temat", forum_posty.idT);
+            ViewBag.uid = new SelectList(db.User, "id", "imie", forum_posty.idAutora);
+            return RedirectToAction("TematSzczegoly", new { id = forum_posty.Temat.id });
+        }
+
+        public ActionResult AdminEditPost(int? id)
+        {
+            if (Session["Admin"] == null) return RedirectToAction("Index");
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Post forum_posty = db.Post.Find(id);
+            if (forum_posty == null)
+            {
+                return HttpNotFound();
+            }
+            ViewBag.tid = new SelectList(db.Temat, "id", "temat", forum_posty.idT);
+            ViewBag.uid = new SelectList(db.User, "id", "imie", forum_posty.idAutora);
+            ViewBag.status = new SelectList(db.Status, "id", "nazwa", forum_posty.status);
+            ViewBag.Temat = forum_posty.Temat.nazwa;
+            return View(forum_posty);
+        }
+
+        // POST: forum_posty1/Edit/5
+        // Aby zapewnić ochronę przed atakami polegającymi na przesyłaniu dodatkowych danych, włącz określone właściwości, z którymi chcesz utworzyć powiązania.
+        // Aby uzyskać więcej szczegółów, zobacz https://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult AdminEditPost([Bind(Include = "id,tresc,idAutora,czas,status,idT,czas_edycji")] Post forum_posty)
+        {
+            if (Session["Admin"] == null) return RedirectToAction("Index");
+            if (ModelState.IsValid)
+            {
+                db.Entry(forum_posty).State = EntityState.Modified;
+                db.SaveChanges();
+                return RedirectToAction("TematSzczegoly", new { id = forum_posty.idT });
+            }
+            ViewBag.tid = new SelectList(db.Temat, "id", "temat", forum_posty.idT);
+            ViewBag.uid = new SelectList(db.User, "id", "imie", forum_posty.idAutora);
+            ViewBag.status = new SelectList(db.Status, "id", "nazwa", forum_posty.status);
+            ViewBag.Temat = forum_posty.Temat.nazwa;
+            return RedirectToAction("TematSzczegoly", new { id = forum_posty.Temat.id });
+        }
 
         public ActionResult Logowanie()
         {
