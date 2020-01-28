@@ -28,10 +28,11 @@ namespace ForumCMS.Models
             throw new UnintentionalCodeFirstException();
         }
     
+        public DbSet<User> User { get; set; }
         public DbSet<Kategoria> Kategoria { get; set; }
         public DbSet<Post> Post { get; set; }
+        public DbSet<Status> Status { get; set; }
         public DbSet<Temat> Temat { get; set; }
-        public DbSet<User> User { get; set; }
     
         public virtual ObjectResult<rejestruj_Result> rejestruj(string login, string pass, string email)
         {

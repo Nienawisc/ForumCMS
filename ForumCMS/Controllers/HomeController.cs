@@ -69,7 +69,7 @@ namespace ForumCMS.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [ValidateInput(false)]
-        public ActionResult UtworzTemat(string naglowek, string tresc, int? id)
+        public ActionResult UtworzTemat(string naglowek, string tresc, int id)
         {
             //sprawdzenie czy istnieje taka kategoria
             if (!czyZalogowany()) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -87,7 +87,7 @@ namespace ForumCMS.Controllers
                 db.SaveChanges();
                 Post post = new Post();
                 post.tresc = tresc;
-                post.idAutora = temat.idAutora;
+                post.idAutora = (int)temat.idAutora;
                 post.czas = temat.czas;
                 post.status = 2;
                 post.idT = temat.id;
@@ -203,6 +203,97 @@ namespace ForumCMS.Controllers
                 return SW.GetStringBuilder().ToString();
             }
         }
+        public ActionResult AdminUtworzKategorie()
+        {
+            if (Session["Admin"] == null) return RedirectToAction("Index");
+            return View();
+        }
+
+        // POST: Forum/Create
+        // Aby zapewnić ochronę przed atakami polegającymi na przesyłaniu dodatkowych danych, włącz określone właściwości, z którymi chcesz utworzyć powiązania.
+        // Aby uzyskać więcej szczegółów, zobacz https://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult AdminUtworzKategorie([Bind(Include = "id,nazwa,opis,kolejnosc,tylko_dla_zalogowanych,aktywna")] Kategoria forum_kategorie)
+        {
+            if (Session["Admin"] == null) return RedirectToAction("Index");
+            if (ModelState.IsValid)
+            {
+                db.Kategoria.Add(forum_kategorie);
+                db.SaveChanges();
+                return RedirectToAction("Index");
+            }
+
+            return View(forum_kategorie);
+        }
+
+        // GET: Forum/Edit/5
+        public ActionResult AdminEdytujKategorie(int? id)
+        {
+            if (Session["Admin"] == null) return RedirectToAction("Index");
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Kategoria forum_kategorie = db.Kategoria.Find(id);
+            if (forum_kategorie == null)
+            {
+                return HttpNotFound();
+            }
+            return View(forum_kategorie);
+        }
+
+        // POST: Forum/Edit/5
+        // Aby zapewnić ochronę przed atakami polegającymi na przesyłaniu dodatkowych danych, włącz określone właściwości, z którymi chcesz utworzyć powiązania.
+        // Aby uzyskać więcej szczegółów, zobacz https://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult AdminEdytujKategorie([Bind(Include = "id,nazwa,opis,kolejnosc,tylko_dla_zalogowanych,aktywna")] Kategoria forum_kategorie)
+        {
+            if (Session["Admin"] == null) return RedirectToAction("Index");
+            if (ModelState.IsValid)
+            {
+                db.Entry(forum_kategorie).State = EntityState.Modified;
+                db.SaveChanges();
+                return RedirectToAction("Index");
+            }
+            return View(forum_kategorie);
+        }
+        public ActionResult AdminEdytujTemat(int? id)
+        {
+            if (Session["Admin"] == null) return RedirectToAction("Index");
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Temat forum_tematy = db.Temat.Find(id);
+            if (forum_tematy == null)
+            {
+                return HttpNotFound();
+            }
+            ViewBag.Kategoria = forum_tematy.Kategoria.nazwa;
+            return View(forum_tematy);
+        }
+
+        // POST: forum_tematy1/Edit/5
+        // Aby zapewnić ochronę przed atakami polegającymi na przesyłaniu dodatkowych danych, włącz określone właściwości, z którymi chcesz utworzyć powiązania.
+        // Aby uzyskać więcej szczegółów, zobacz https://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult AdminEdytujTemat([Bind(Include = "id,temat,czas,lid,status,odslony,katid")] Temat forum_tematy)
+        {
+            if (Session["Admin"] == null) return RedirectToAction("Index");
+            if (ModelState.IsValid)
+            {
+                db.Entry(forum_tematy).State = EntityState.Modified;
+                db.SaveChanges();
+                return RedirectToAction("Index", new { id = forum_tematy.idK });
+            }
+            ViewBag.Kategoria = forum_tematy.Kategoria.nazwa;
+            return View(forum_tematy);
+        }
+
+
         public ActionResult Logowanie()
         {
             return View();

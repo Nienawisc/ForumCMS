@@ -12,20 +12,18 @@ namespace ForumCMS.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class Kategoria
+    public partial class Status
     {
-        public Kategoria()
+        public Status()
         {
+            this.Post = new HashSet<Post>();
             this.Temat = new HashSet<Temat>();
         }
     
         public int id { get; set; }
         public string nazwa { get; set; }
-        public string opis { get; set; }
-        public bool aktywna { get; set; }
-        public Nullable<int> kolejnosc { get; set; }
-        public bool tylko_dla_zalogowanych { get; set; }
     
+        public virtual ICollection<Post> Post { get; set; }
         public virtual ICollection<Temat> Temat { get; set; }
     }
 }

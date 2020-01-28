@@ -5,13 +5,16 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="65e0f3d7184d40a2b93162084126d397" Name="Diagram1">
-        <EntityTypeShape EntityType="ForumGameModel.Kategoria" Width="1.5" PointX="3.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ForumGameModel.Post" Width="1.5" PointX="3" PointY="4.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="ForumGameModel.Temat" Width="1.5" PointX="6" PointY="4.5" IsExpanded="true" />
-        <AssociationConnector Association="ForumGameModel.FK_Temat_Kategoria" ManuallyRouted="false" />
-        <AssociationConnector Association="ForumGameModel.FK_Post_Temat" ManuallyRouted="false" />
         <EntityTypeShape EntityType="ForumGameModel.User" Width="1.5" PointX="0.75" PointY="4.625" />
+        <EntityTypeShape EntityType="ForumGameModel.Kategoria" Width="1.5" PointX="0.75" PointY="0.875" />
+        <EntityTypeShape EntityType="ForumGameModel.Post" Width="1.5" PointX="5.25" PointY="3.5" />
+        <EntityTypeShape EntityType="ForumGameModel.Status" Width="1.5" PointX="0.75" PointY="9.25" />
+        <EntityTypeShape EntityType="ForumGameModel.Temat" Width="1.5" PointX="3" PointY="2.5" />
+        <AssociationConnector Association="ForumGameModel.FK_Temat_Kategoria" />
+        <AssociationConnector Association="ForumGameModel.FK_Post_Status" />
+        <AssociationConnector Association="ForumGameModel.FK_Post_Temat" />
         <AssociationConnector Association="ForumGameModel.FK_Post_User" />
+        <AssociationConnector Association="ForumGameModel.FK_Temat_Status" />
         <AssociationConnector Association="ForumGameModel.FK_Temat_User" />
         </Diagram>
     </edmx:Diagrams>

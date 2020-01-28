@@ -9,7 +9,7 @@
 @if (Session["Admin"] != null)
 {
     <p>
-        @Html.ActionLink("Stwórz ", "CreateAdmin", new { id = Url.RequestContext.RouteData.Values["id"] })
+        @Html.ActionLink("Stwórz ", "AdminUtworzKategorie", new { id = Url.RequestContext.RouteData.Values["id"] })
     </p>
 }
 <div>
@@ -47,7 +47,7 @@
                             @if (Session["Admin"] != null)
                             {
                                 <div class="admin_tools" style="float:right">
-                                    @Html.ActionLink("Edit", "EditAdmin", new { id = item.id })
+                                    @Html.ActionLink("Edit", "AdminEdytujKategorie", new { id = item.id })
                                 </div>
                             }
                             @if ((bool)item.tylko_dla_zalogowanych)
@@ -60,9 +60,9 @@
                                 }
                                 else
                                 {
-                                    <a href='@Url.Action("Logowanie")'>
-                                        <h4>X @item.nazwa</h4><br />
-                                    </a>
+                        <a href='@Url.Action("Logowanie")'>
+                            <h4>X @item.nazwa</h4><br />
+                        </a>
                                 }
                             }
                             else

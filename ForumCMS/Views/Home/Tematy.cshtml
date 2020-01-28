@@ -51,7 +51,7 @@
                     @if (Session["Admin"] != null)
                     {
                         <div class="admin_tools" style="float:right">
-                            @Html.ActionLink("Edit", "EditAdmin", new { id = item.id })
+                            @Html.ActionLink("Edit", "AdminEdytujTemat", new { id = item.id })
                         </div>
                     }
                     <a href='@Url.Action("TematSzczegoly", new { id = item.id, page=1 })'>

@@ -15,13 +15,14 @@ namespace ForumCMS.Models
     public partial class Post
     {
         public int id { get; set; }
-        public Nullable<int> idT { get; set; }
-        public Nullable<int> idAutora { get; set; }
+        public int idT { get; set; }
+        public int idAutora { get; set; }
         public Nullable<System.DateTime> czas { get; set; }
-        public Nullable<int> status { get; set; }
+        public int status { get; set; }
         public Nullable<System.DateTime> czas_edycji { get; set; }
         public string tresc { get; set; }
     
+        public virtual Status Status1 { get; set; }
         public virtual Temat Temat { get; set; }
         public virtual User User { get; set; }
     }

@@ -20,15 +20,16 @@ namespace ForumCMS.Models
         }
     
         public int id { get; set; }
-        public Nullable<int> idK { get; set; }
+        public int idK { get; set; }
         public string nazwa { get; set; }
         public Nullable<System.DateTime> czas { get; set; }
         public Nullable<int> idAutora { get; set; }
-        public Nullable<int> status { get; set; }
+        public int status { get; set; }
         public Nullable<int> odslony { get; set; }
     
         public virtual Kategoria Kategoria { get; set; }
         public virtual ICollection<Post> Post { get; set; }
+        public virtual Status Status1 { get; set; }
         public virtual User User { get; set; }
     }
 }
