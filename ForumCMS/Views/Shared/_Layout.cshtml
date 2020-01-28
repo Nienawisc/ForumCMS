@@ -53,7 +53,7 @@
         <ul class="navbar-nav">
             @if (Session["User"] != null)
             {
-                <li class="nav-item"><a class="nav-link">Zalogowany:  @Session["UserLogin"]</a></li>
+                <li class="nav-item"><a class="nav-link" href="@Url.Action("Profil", "Home")">User:  @Session["UserLogin"]</a></li>
                 <li class="nav-item"><a class="nav-link" href="@Url.Action("Wyloguj", "Home")">Wyloguj</a></li>
             }
             else

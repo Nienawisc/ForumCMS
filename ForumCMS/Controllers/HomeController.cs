@@ -413,13 +413,13 @@ namespace ForumCMS.Controllers
             if (user == null)
             {
                 ViewBag.error = "Błędny login lub hasło";
-                return View("Login");
+                return View("Logowanie");
             }
             var finded = db.User.Find(user.id);
             if (finded == null)
             {
                 ViewBag.error = "Błędny login lub hasło";
-                return View("Login");
+                return View("Logowanie");
             }
             if (autologin == "on")
             {
@@ -480,6 +480,37 @@ namespace ForumCMS.Controllers
             Session.Abandon();
             HttpContext.Request.Cookies.Clear();
             return RedirectToAction("Index");
+        }
+
+        public ActionResult Profil()
+        {
+            var user = db.User.Find(Session["User"]);
+            if (user == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            return View(user);
+        }
+        [HttpPost]
+        public ActionResult ChangePhoto(HttpPostedFileBase file)
+        {
+            var user = db.User.Find(Session["User"]);
+            if (user == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            if (file != null && file.ContentLength > 0)
+                try
+                {
+                    string toJpg = $"{user.id}.jpg";
+                    string path = Path.Combine(Server.MapPath("~/media"),
+                                               Path.GetFileName(toJpg));
+                    file.SaveAs(path);
+                    ViewBag.Message = "File uploaded successfully";
+                }
+                catch (Exception ex)
+                {
+                    ViewBag.Message = "ERROR:" + ex.Message.ToString();
+                }
+            else
+            {
+                ViewBag.Message = "You have not specified a file.";
+            }
+            return RedirectToAction("Profil");
         }
     }
 }

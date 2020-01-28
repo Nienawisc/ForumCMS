@@ -291,6 +291,7 @@
     <Content Include="Views\Home\AdminEdytujTemat.cshtml" />
     <Content Include="Views\Home\AdminEditPost.cshtml" />
     <Content Include="Views\Home\EditPost.cshtml" />
+    <Content Include="Views\Home\Profil.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

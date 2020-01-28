@@ -25,7 +25,7 @@
             <tr>
                 <td class="hidden-xs">
                     @{ //zdjecie uzytkownika
-                        <img src="~/media/@(item.idAutora).jpg" class="avatar" style="display:block; width:100%; height:auto;">
+                        <img src="~/media/@(item.idAutora).jpg" class="avatar" style="display:block; width:100%; height:auto;" onerror="this.src='/img/logo.png';">
                     }
                     <p class="uzytkownik">@Html.DisplayFor(modelItem => item.User.login)</p>
                 </td>

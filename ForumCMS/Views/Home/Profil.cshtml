@@ -1,0 +1,17 @@
+﻿@model ForumCMS.Models.User
+@{
+    ViewBag.Title = "Profil";
+}
+
+<h2>Profile</h2>
+<h4>Hello @Model.login!</h4>
+<img src="~/media/@(Model.id).jpg" class="avatar" style="display:block; width:100%; height:auto;" onerror="this.src='/img/logo.png';">
+<br />
+@using (Html.BeginForm("ChangePhoto",
+"Home",
+FormMethod.Post,
+new { enctype = "multipart/form-data" }))
+{
+<input type="file" name="file" id="file">
+<input type="submit" value="Save" class="btn btn-danger" />
+}
