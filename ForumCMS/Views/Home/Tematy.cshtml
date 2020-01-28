@@ -1,0 +1,147 @@
+﻿@using PagedList.Mvc;
+@using PagedList;
+@model List<ForumCMS.Models.Temat>
+
+@{
+    ViewBag.Title = "Forum";
+}
+<h2>
+    @Html.ActionLink("Forum", "Index")
+
+    @if (Model.FirstOrDefault() != null)
+    {
+        <span>></span>
+        @Model.First().Kategoria.nazwa
+    }
+
+</h2>
+
+@if (Session["User"] != null)
+{
+    <p>
+        @Html.ActionLink("Utwórz nowy temat", "UtworzTemat", new { id = Url.RequestContext.RouteData.Values["id"] }, new { @id = "nowyTemat" })
+    </p>
+}
+<div>
+    <table id="forum" class="table table-striped">
+        <tr>
+            <th style="width:50%">
+                Temat
+            </th>
+            <th class="hidden-xs">
+                Autor
+            </th>
+            <th class="hidden-xs">
+                Posty
+            </th>
+            <th class="hidden-xs">
+                Odsłony
+            </th>
+            <th class="hidden-xs">
+                Ostatnia Wypowiedź
+            </th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            if (item.status == 1) { continue; }
+            var ostatni = item.Post.OrderByDescending(y => y.czas).FirstOrDefault(y => y.status != 1);
+            <tr>
+                <td>
+                    @if (Session["Admin"] != null)
+                    {
+                        <div class="admin_tools" style="float:right">
+                            @Html.ActionLink("Edit", "EditAdmin", new { id = item.id })
+                        </div>
+                    }
+                    <a href='@Url.Action("TematSzczegoly", new { id = item.id, page=1 })'>
+                        @if (item.status == 3)
+                        {<span>[Przyklejony]</span>}
+                        <h4 style="display: block; width:100%; white-space: nowrap; overflow:hidden; text-overflow: ellipsis;">@Html.DisplayFor(modelItem => item.nazwa)</h4>
+                    </a>
+                    <div class="d-none">
+                        <div><strong>Autor</strong>: @item.User.login</div>
+                        <div><strong>Posty</strong>: @Html.DisplayFor(modelItem => item.Post.Where(o => o.status > 1).ToList().Count)</div>
+                        <div><strong>Odsłony</strong>: @Html.DisplayFor(modelItem => item.odslony)</div>
+                        <div><strong>Ostatnia wypowiedź</strong>: @Html.Raw(ostatni != null ? $"{ostatni.czas} <strong>Autor</strong>: {ostatni.User.login}" : $"{DateTime.MinValue}\n")</div>
+                    </div>
+                </td>
+                <td class="hidden-xs">
+                    @{ string autor = string.Format("{0}", item.User.login);}
+                    @autor
+                </td>
+                <td class="wyrownajDoPrawej hidden-xs">
+                    @Html.DisplayFor(modelItem => item.Post.Where(o => o.status > 1).ToList().Count)
+                </td>
+                <td class="wyrownajDoPrawej hidden-xs">
+                    @Html.DisplayFor(modelItem => item.odslony)
+                </td>
+                <td class="hidden-xs">
+                    @Html.Raw(ostatni != null ? $"{ostatni.czas}<br/>Autor: {ostatni.User.login}" : $"{DateTime.MinValue}\n")
+                </td>
+            </tr>
+        }
+    </table>
+</div>
+@{
+    IPagedList pagedlist = null;
+    if (Model.FirstOrDefault() != null)
+    {
+        int page;
+        if (this.ViewContext.RouteData.Values["page"] == null)
+        {
+            page = 1;
+        }
+        else
+        {
+            page = Int32.Parse(this.ViewContext.RouteData.Values["page"].ToString());
+        }
+        if (page <= 0)
+        {
+            page = 1;
+        }
+        if (Request["search"] != null)
+        {
+            pagedlist = Model.First().Kategoria.Temat.Where(t => t.status != 1 && t.nazwa.ToLower().Contains(Request["search"].ToLower())).ToPagedList(page, (int)ViewBag.pagination);
+        }
+        else
+        {
+            pagedlist = Model.First().Kategoria.Temat.Where(t => t.status != 1).ToPagedList(page, (int)ViewBag.pagination);
+        }
+    }
+    if (pagedlist != null)
+    {
+        if (Request["search"] != null)
+        {
+            <p>Strona @(pagedlist.PageCount < pagedlist.PageNumber ? 0 : pagedlist.PageNumber) z @pagedlist.PageCount</p>
+            @Html.PagedListPager(pagedlist, page => Url.Action("Index", new { page, search = Request["search"] }), new PagedListRenderOptions
+        {
+            DisplayLinkToFirstPage = PagedListDisplayMode.Always,
+            DisplayLinkToLastPage = PagedListDisplayMode.Always,
+            DisplayLinkToPreviousPage = PagedListDisplayMode.Always,
+            DisplayLinkToNextPage = PagedListDisplayMode.Always,
+            MaximumPageNumbersToDisplay = 5
+
+        })
+        }
+        else
+        {
+            <p>Strona @(pagedlist.PageCount < pagedlist.PageNumber ? 0 : pagedlist.PageNumber) z @pagedlist.PageCount</p>
+            @Html.PagedListPager(pagedlist, page => Url.Action("Index", new { page }), new PagedListRenderOptions
+        {
+            DisplayLinkToFirstPage = PagedListDisplayMode.Always,
+            DisplayLinkToLastPage = PagedListDisplayMode.Always,
+            DisplayLinkToPreviousPage = PagedListDisplayMode.Always,
+            DisplayLinkToNextPage = PagedListDisplayMode.Always,
+            MaximumPageNumbersToDisplay = 5
+
+        })
+        }
+    }
+}
+<form method="get">
+    <p>
+        Szukaj tematu: @Html.TextBox("search")
+        <input id="searchSubmit" type="submit" value="Szukaj" />
+    </p>
+</form>

@@ -16,8 +16,8 @@ namespace ForumCMS.Models
     {
         public User()
         {
-            this.Temat = new HashSet<Temat>();
             this.Post = new HashSet<Post>();
+            this.Temat = new HashSet<Temat>();
         }
     
         public int id { get; set; }
@@ -26,8 +26,9 @@ namespace ForumCMS.Models
         public string autokod { get; set; }
         public Nullable<System.DateTime> lastLogin { get; set; }
         public string email { get; set; }
+        public bool admin { get; set; }
     
-        public virtual ICollection<Temat> Temat { get; set; }
         public virtual ICollection<Post> Post { get; set; }
+        public virtual ICollection<Temat> Temat { get; set; }
     }
 }

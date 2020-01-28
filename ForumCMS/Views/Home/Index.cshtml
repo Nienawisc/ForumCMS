@@ -36,7 +36,7 @@
             {
                 if ((bool)item.aktywna || Session["Admin"] != null)
                 {
-                    Temat t = item.Temat.Where(x => x.status != 0).OrderByDescending(x => x.Post.OrderByDescending(y => y.czas)).FirstOrDefault();
+                    Temat t = item.Temat.Where(x => x.status != 0).OrderByDescending(x => x.Post.OrderByDescending(y => y.czas).FirstOrDefault().czas).FirstOrDefault();
                     Post ostatni = null;
                     if(t!=null)
                     {
@@ -54,20 +54,20 @@
                             {
                                 if (Session["UserId"] != null)
                                 {
-                                    <a href='@Url.Action("Index", "forum_tematy", new { id = item.id, page = 1 })'>
+                                    <a href='@Url.Action("Tematy", new { id = item.id, page = 1 })'>
                                         <h4>@item.nazwa</h4><br />
                                     </a>
                                 }
                                 else
                                 {
-                                    <a href='@Url.Action("Index", "Login", null)'>
+                                    <a href='@Url.Action("Logowanie")'>
                                         <h4>X @item.nazwa</h4><br />
                                     </a>
                                 }
                             }
                             else
                             {
-                                <a href='@Url.Action("Index", "forum_tematy", new { id = item.id, page = 1 })'>
+                                <a href='@Url.Action("Tematy", new { id = item.id, page = 1 })'>
                                     <h4>@item.nazwa</h4>
                                 </a>
                             }

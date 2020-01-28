@@ -27,8 +27,8 @@ namespace ForumCMS.Models
         public Nullable<int> status { get; set; }
         public Nullable<int> odslony { get; set; }
     
-        public virtual User User { get; set; }
         public virtual Kategoria Kategoria { get; set; }
         public virtual ICollection<Post> Post { get; set; }
+        public virtual User User { get; set; }
     }
 }

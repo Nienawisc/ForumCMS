@@ -41,6 +41,7 @@
 
     <link rel="stylesheet" href="~/Content/style.css">
     <link rel="stylesheet" href="~/Content/jodit.min.css">
+    <link rel="stylesheet" href="~/Content/PagedList.css">
     <script src="~/Scripts/jodit.min.js"></script>
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
@@ -73,5 +74,14 @@
     </div>
     @RenderSection("scripts", required: false)
     @{Session["lastPage"] = HttpContext.Current.Request.Url.AbsolutePath;}
+    <script>
+        $.ajax({
+  url: 'https://tinyfac.es/api/users',
+  dataType: 'json',
+  success: function(data) {
+      console.log(data);
+  }
+});
+    </script>
 </body>
 </html>

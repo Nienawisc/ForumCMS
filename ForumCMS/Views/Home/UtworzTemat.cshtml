@@ -1,0 +1,43 @@
+﻿@model ForumCMS.Models.Temat
+@{
+    ViewBag.Title = "Create";
+}
+
+@if (Model != null)
+{
+    <h2>Utworz nowy temat w kategorii: @Html.ActionLink(Model.Kategoria.nazwa, "Index", new { id = Model.Kategoria.id, page = 1 })</h2>
+}
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            <div class="col12">
+                <input class="form-control col12" name="naglowek" type="text" maxlength="500" placeholder="Temat" />
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col12">
+                <textarea id="tresc" name="tresc" class="form-control col-12"></textarea>
+            </div>
+            <script>
+                var editor = new Jodit('#tresc', {
+                    placeholder: 'Treść odpowiedzi',
+                    buttons: ['bold', 'strikethrough', 'underline', 'italic', '|', 'ul', 'ol', '|', 'outdent', 'indent', '|', 'font', 'fontsize', 'brush', 'paragraph', '|', 'image', 'video', 'table', 'link', '|', 'align', 'undo', 'redo', 'symbol']
+                });
+            </script>
+        </div>
+        <div class="form-group">
+            <div class="col-12">
+                <input class="btn btn-danger col-12" id="submit" type="submit" value="Stwórz temat"  />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Powrót", "Index", new { id = Url.RequestContext.RouteData.Values["id"] })
+</div>

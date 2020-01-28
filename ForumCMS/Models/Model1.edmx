@@ -50,6 +50,7 @@
           <Property Name="autokod" Type="varchar" MaxLength="30" />
           <Property Name="lastLogin" Type="datetime" />
           <Property Name="email" Type="varchar(max)" />
+          <Property Name="admin" Type="bit" Nullable="false" />
         </EntityType>
         <Association Name="FK_Post_Temat">
           <End Role="Temat" Type="Self.Temat" Multiplicity="0..1" />
@@ -134,93 +135,6 @@
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="ForumGameModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
-        <EntityType Name="User">
-          <Key>
-            <PropertyRef Name="id" />
-          </Key>
-          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="login" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="pass" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="autokod" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
-          <Property Name="lastLogin" Type="DateTime" Precision="3" />
-          <Property Name="email" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="Temat" Relationship="ForumGameModel.FK_Temat_User" FromRole="User" ToRole="Temat" />
-          <NavigationProperty Name="Post" Relationship="ForumGameModel.FK_Post_User" FromRole="User" ToRole="Post" />
-        </EntityType>
-        <EntityContainer Name="ForumGameEntities" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="User" EntityType="Self.User" />
-          <FunctionImport Name="zaloguj" ReturnType="Collection(ForumGameModel.zaloguj_Result)">
-            <Parameter Name="login" Mode="In" Type="String" />
-            <Parameter Name="pass" Mode="In" Type="String" />
-          </FunctionImport>
-          <FunctionImport Name="rejestruj" ReturnType="Collection(ForumGameModel.rejestruj_Result)">
-            <Parameter Name="login" Mode="In" Type="String" />
-            <Parameter Name="pass" Mode="In" Type="String" />
-            <Parameter Name="email" Mode="In" Type="String" />
-          </FunctionImport>
-          <EntitySet Name="Temat" EntityType="ForumGameModel.Temat" />
-          <AssociationSet Name="FK_Temat_User" Association="ForumGameModel.FK_Temat_User">
-            <End Role="User" EntitySet="User" />
-            <End Role="Temat" EntitySet="Temat" />
-          </AssociationSet>
-          <EntitySet Name="Kategoria" EntityType="ForumGameModel.Kategoria" />
-          <AssociationSet Name="FK_Temat_Kategoria" Association="ForumGameModel.FK_Temat_Kategoria">
-            <End Role="Kategoria" EntitySet="Kategoria" />
-            <End Role="Temat" EntitySet="Temat" />
-          </AssociationSet>
-          <EntitySet Name="Post" EntityType="ForumGameModel.Post" />
-          <AssociationSet Name="FK_Post_Temat" Association="ForumGameModel.FK_Post_Temat">
-            <End Role="Temat" EntitySet="Temat" />
-            <End Role="Post" EntitySet="Post" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Post_User" Association="ForumGameModel.FK_Post_User">
-            <End Role="User" EntitySet="User" />
-            <End Role="Post" EntitySet="Post" />
-          </AssociationSet>
-        </EntityContainer>
-        <ComplexType Name="zaloguj_Result">
-          <Property Type="Int32" Name="id" Nullable="false" />
-          <Property Type="String" Name="login" Nullable="true" />
-          <Property Type="String" Name="pass" Nullable="true" />
-          <Property Type="String" Name="autokod" Nullable="true" MaxLength="30" />
-          <Property Type="DateTime" Name="lastLogin" Nullable="true" Precision="23" />
-          <Property Type="String" Name="email" Nullable="true" />
-        </ComplexType>
-        <ComplexType Name="rejestruj_Result">
-          <Property Type="Int32" Name="id" Nullable="false" />
-          <Property Type="String" Name="login" Nullable="true" />
-          <Property Type="String" Name="pass" Nullable="true" />
-          <Property Type="String" Name="autokod" Nullable="true" MaxLength="30" />
-          <Property Type="DateTime" Name="lastLogin" Nullable="true" Precision="23" />
-          <Property Type="String" Name="email" Nullable="true" />
-        </ComplexType>
-        <EntityType Name="Temat">
-          <Key>
-            <PropertyRef Name="id" />
-          </Key>
-          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="idK" Type="Int32" />
-          <Property Name="nazwa" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="czas" Type="DateTime" Precision="3" />
-          <Property Name="idAutora" Type="Int32" />
-          <Property Name="status" Type="Int32" />
-          <Property Name="odslony" Type="Int32" />
-          <NavigationProperty Name="User" Relationship="ForumGameModel.FK_Temat_User" FromRole="Temat" ToRole="User" />
-          <NavigationProperty Name="Kategoria" Relationship="ForumGameModel.FK_Temat_Kategoria" FromRole="Temat" ToRole="Kategoria" />
-          <NavigationProperty Name="Post" Relationship="ForumGameModel.FK_Post_Temat" FromRole="Temat" ToRole="Post" />
-        </EntityType>
-        <Association Name="FK_Temat_User">
-          <End Type="ForumGameModel.User" Role="User" Multiplicity="0..1" />
-          <End Type="ForumGameModel.Temat" Role="Temat" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="User">
-              <PropertyRef Name="id" />
-            </Principal>
-            <Dependent Role="Temat">
-              <PropertyRef Name="idAutora" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityType Name="Kategoria">
           <Key>
             <PropertyRef Name="id" />
@@ -231,20 +145,8 @@
           <Property Name="aktywna" Type="Boolean" />
           <Property Name="kolejnosc" Type="Int32" />
           <Property Name="tylko_dla_zalogowanych" Type="Boolean" />
-          <NavigationProperty Name="Temat" Relationship="ForumGameModel.FK_Temat_Kategoria" FromRole="Kategoria" ToRole="Temat" />
+          <NavigationProperty Name="Temat" Relationship="Self.FK_Temat_Kategoria" FromRole="Kategoria" ToRole="Temat" />
         </EntityType>
-        <Association Name="FK_Temat_Kategoria">
-          <End Type="ForumGameModel.Kategoria" Role="Kategoria" Multiplicity="0..1" />
-          <End Type="ForumGameModel.Temat" Role="Temat" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Kategoria">
-              <PropertyRef Name="id" />
-            </Principal>
-            <Dependent Role="Temat">
-              <PropertyRef Name="idK" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityType Name="Post">
           <Key>
             <PropertyRef Name="id" />
@@ -256,12 +158,39 @@
           <Property Name="status" Type="Int32" />
           <Property Name="czas_edycji" Type="DateTime" Precision="3" />
           <Property Name="tresc" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="Temat" Relationship="ForumGameModel.FK_Post_Temat" FromRole="Post" ToRole="Temat" />
+          <NavigationProperty Name="Temat" Relationship="Self.FK_Post_Temat" FromRole="Post" ToRole="Temat" />
           <NavigationProperty Name="User" Relationship="ForumGameModel.FK_Post_User" FromRole="Post" ToRole="User" />
         </EntityType>
+        <EntityType Name="Temat">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="idK" Type="Int32" />
+          <Property Name="nazwa" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="czas" Type="DateTime" Precision="3" />
+          <Property Name="idAutora" Type="Int32" />
+          <Property Name="status" Type="Int32" />
+          <Property Name="odslony" Type="Int32" />
+          <NavigationProperty Name="Kategoria" Relationship="Self.FK_Temat_Kategoria" FromRole="Temat" ToRole="Kategoria" />
+          <NavigationProperty Name="Post" Relationship="Self.FK_Post_Temat" FromRole="Temat" ToRole="Post" />
+          <NavigationProperty Name="User" Relationship="ForumGameModel.FK_Temat_User" FromRole="Temat" ToRole="User" />
+        </EntityType>
+        <Association Name="FK_Temat_Kategoria">
+          <End Role="Kategoria" Type="Self.Kategoria" Multiplicity="0..1" />
+          <End Role="Temat" Type="Self.Temat" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Kategoria">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Temat">
+              <PropertyRef Name="idK" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Post_Temat">
-          <End Type="ForumGameModel.Temat" Role="Temat" Multiplicity="0..1" />
-          <End Type="ForumGameModel.Post" Role="Post" Multiplicity="*" />
+          <End Role="Temat" Type="Self.Temat" Multiplicity="0..1" />
+          <End Role="Post" Type="Self.Post" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Temat">
               <PropertyRef Name="id" />
@@ -271,6 +200,67 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityContainer Name="ForumGameEntities1" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Kategoria" EntityType="Self.Kategoria" />
+          <EntitySet Name="Post" EntityType="Self.Post" />
+          <EntitySet Name="Temat" EntityType="Self.Temat" />
+          <AssociationSet Name="FK_Temat_Kategoria" Association="Self.FK_Temat_Kategoria">
+            <End Role="Kategoria" EntitySet="Kategoria" />
+            <End Role="Temat" EntitySet="Temat" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Post_Temat" Association="Self.FK_Post_Temat">
+            <End Role="Temat" EntitySet="Temat" />
+            <End Role="Post" EntitySet="Post" />
+          </AssociationSet>
+          <FunctionImport Name="rejestruj" ReturnType="Collection(ForumGameModel.rejestruj_Result)">
+            <Parameter Name="login" Mode="In" Type="String" />
+            <Parameter Name="pass" Mode="In" Type="String" />
+            <Parameter Name="email" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="zaloguj" ReturnType="Collection(ForumGameModel.zaloguj_Result)">
+            <Parameter Name="login" Mode="In" Type="String" />
+            <Parameter Name="pass" Mode="In" Type="String" />
+          </FunctionImport>
+          <EntitySet Name="User" EntityType="ForumGameModel.User" />
+          <AssociationSet Name="FK_Post_User" Association="ForumGameModel.FK_Post_User">
+            <End Role="User" EntitySet="User" />
+            <End Role="Post" EntitySet="Post" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Temat_User" Association="ForumGameModel.FK_Temat_User">
+            <End Role="User" EntitySet="User" />
+            <End Role="Temat" EntitySet="Temat" />
+          </AssociationSet>
+        </EntityContainer>
+        <ComplexType Name="rejestruj_Result">
+          <Property Type="Int32" Name="id" Nullable="false" />
+          <Property Type="String" Name="login" Nullable="true" />
+          <Property Type="String" Name="pass" Nullable="true" />
+          <Property Type="String" Name="autokod" Nullable="true" MaxLength="30" />
+          <Property Type="DateTime" Name="lastLogin" Nullable="true" Precision="23" />
+          <Property Type="String" Name="email" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="zaloguj_Result">
+          <Property Type="Int32" Name="id" Nullable="false" />
+          <Property Type="String" Name="login" Nullable="true" />
+          <Property Type="String" Name="pass" Nullable="true" />
+          <Property Type="String" Name="autokod" Nullable="true" MaxLength="30" />
+          <Property Type="DateTime" Name="lastLogin" Nullable="true" Precision="23" />
+          <Property Type="String" Name="email" Nullable="true" />
+        </ComplexType>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="login" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="pass" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="autokod" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="lastLogin" Type="DateTime" Precision="3" />
+          <Property Name="email" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="admin" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="Post" Relationship="ForumGameModel.FK_Post_User" FromRole="User" ToRole="Post" />
+          <NavigationProperty Name="Temat" Relationship="ForumGameModel.FK_Temat_User" FromRole="User" ToRole="Temat" />
+        </EntityType>
         <Association Name="FK_Post_User">
           <End Type="ForumGameModel.User" Role="User" Multiplicity="0..1" />
           <End Type="ForumGameModel.Post" Role="Post" Multiplicity="*" />
@@ -283,36 +273,62 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_Temat_User">
+          <End Type="ForumGameModel.User" Role="User" Multiplicity="0..1" />
+          <End Type="ForumGameModel.Temat" Role="Temat" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Temat">
+              <PropertyRef Name="idAutora" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="ForumGameModelStoreContainer" CdmEntityContainer="ForumGameEntities">
-          <EntitySetMapping Name="User">
-            <EntityTypeMapping TypeName="ForumGameModel.User">
-              <MappingFragment StoreEntitySet="User">
+        <EntityContainerMapping StorageEntityContainer="ForumGameModelStoreContainer" CdmEntityContainer="ForumGameEntities1">
+          <EntitySetMapping Name="Kategoria">
+            <EntityTypeMapping TypeName="ForumGameModel.Kategoria">
+              <MappingFragment StoreEntitySet="Kategoria">
                 <ScalarProperty Name="id" ColumnName="id" />
-                <ScalarProperty Name="login" ColumnName="login" />
-                <ScalarProperty Name="pass" ColumnName="pass" />
-                <ScalarProperty Name="autokod" ColumnName="autokod" />
-                <ScalarProperty Name="lastLogin" ColumnName="lastLogin" />
-                <ScalarProperty Name="email" ColumnName="email" />
+                <ScalarProperty Name="nazwa" ColumnName="nazwa" />
+                <ScalarProperty Name="opis" ColumnName="opis" />
+                <ScalarProperty Name="aktywna" ColumnName="aktywna" />
+                <ScalarProperty Name="kolejnosc" ColumnName="kolejnosc" />
+                <ScalarProperty Name="tylko_dla_zalogowanych" ColumnName="tylko_dla_zalogowanych" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <FunctionImportMapping FunctionImportName="zaloguj" FunctionName="ForumGameModel.Store.zaloguj">
-            <ResultMapping>
-              <ComplexTypeMapping TypeName="ForumGameModel.zaloguj_Result">
+          <EntitySetMapping Name="Post">
+            <EntityTypeMapping TypeName="ForumGameModel.Post">
+              <MappingFragment StoreEntitySet="Post">
                 <ScalarProperty Name="id" ColumnName="id" />
-                <ScalarProperty Name="login" ColumnName="login" />
-                <ScalarProperty Name="pass" ColumnName="pass" />
-                <ScalarProperty Name="autokod" ColumnName="autokod" />
-                <ScalarProperty Name="lastLogin" ColumnName="lastLogin" />
-                <ScalarProperty Name="email" ColumnName="email" />
-              </ComplexTypeMapping>
-            </ResultMapping>
-          </FunctionImportMapping>
+                <ScalarProperty Name="idT" ColumnName="idT" />
+                <ScalarProperty Name="idAutora" ColumnName="idAutora" />
+                <ScalarProperty Name="czas" ColumnName="czas" />
+                <ScalarProperty Name="status" ColumnName="status" />
+                <ScalarProperty Name="czas_edycji" ColumnName="czas_edycji" />
+                <ScalarProperty Name="tresc" ColumnName="tresc" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Temat">
+            <EntityTypeMapping TypeName="ForumGameModel.Temat">
+              <MappingFragment StoreEntitySet="Temat">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="idK" ColumnName="idK" />
+                <ScalarProperty Name="nazwa" ColumnName="nazwa" />
+                <ScalarProperty Name="czas" ColumnName="czas" />
+                <ScalarProperty Name="idAutora" ColumnName="idAutora" />
+                <ScalarProperty Name="status" ColumnName="status" />
+                <ScalarProperty Name="odslony" ColumnName="odslony" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <FunctionImportMapping FunctionImportName="rejestruj" FunctionName="ForumGameModel.Store.rejestruj">
             <ResultMapping>
               <ComplexTypeMapping TypeName="ForumGameModel.rejestruj_Result">
@@ -325,40 +341,27 @@
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
-          <EntitySetMapping Name="Temat">
-            <EntityTypeMapping TypeName="ForumGameModel.Temat">
-              <MappingFragment StoreEntitySet="Temat">
-                <ScalarProperty Name="odslony" ColumnName="odslony" />
-                <ScalarProperty Name="status" ColumnName="status" />
-                <ScalarProperty Name="idAutora" ColumnName="idAutora" />
-                <ScalarProperty Name="czas" ColumnName="czas" />
-                <ScalarProperty Name="nazwa" ColumnName="nazwa" />
-                <ScalarProperty Name="idK" ColumnName="idK" />
+          <FunctionImportMapping FunctionImportName="zaloguj" FunctionName="ForumGameModel.Store.zaloguj">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="ForumGameModel.zaloguj_Result">
                 <ScalarProperty Name="id" ColumnName="id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Kategoria">
-            <EntityTypeMapping TypeName="ForumGameModel.Kategoria">
-              <MappingFragment StoreEntitySet="Kategoria">
-                <ScalarProperty Name="tylko_dla_zalogowanych" ColumnName="tylko_dla_zalogowanych" />
-                <ScalarProperty Name="kolejnosc" ColumnName="kolejnosc" />
-                <ScalarProperty Name="aktywna" ColumnName="aktywna" />
-                <ScalarProperty Name="opis" ColumnName="opis" />
-                <ScalarProperty Name="nazwa" ColumnName="nazwa" />
-                <ScalarProperty Name="id" ColumnName="id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Post">
-            <EntityTypeMapping TypeName="ForumGameModel.Post">
-              <MappingFragment StoreEntitySet="Post">
-                <ScalarProperty Name="tresc" ColumnName="tresc" />
-                <ScalarProperty Name="czas_edycji" ColumnName="czas_edycji" />
-                <ScalarProperty Name="status" ColumnName="status" />
-                <ScalarProperty Name="czas" ColumnName="czas" />
-                <ScalarProperty Name="idAutora" ColumnName="idAutora" />
-                <ScalarProperty Name="idT" ColumnName="idT" />
+                <ScalarProperty Name="login" ColumnName="login" />
+                <ScalarProperty Name="pass" ColumnName="pass" />
+                <ScalarProperty Name="autokod" ColumnName="autokod" />
+                <ScalarProperty Name="lastLogin" ColumnName="lastLogin" />
+                <ScalarProperty Name="email" ColumnName="email" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <EntitySetMapping Name="User">
+            <EntityTypeMapping TypeName="ForumGameModel.User">
+              <MappingFragment StoreEntitySet="User">
+                <ScalarProperty Name="admin" ColumnName="admin" />
+                <ScalarProperty Name="email" ColumnName="email" />
+                <ScalarProperty Name="lastLogin" ColumnName="lastLogin" />
+                <ScalarProperty Name="autokod" ColumnName="autokod" />
+                <ScalarProperty Name="pass" ColumnName="pass" />
+                <ScalarProperty Name="login" ColumnName="login" />
                 <ScalarProperty Name="id" ColumnName="id" />
               </MappingFragment>
             </EntityTypeMapping>

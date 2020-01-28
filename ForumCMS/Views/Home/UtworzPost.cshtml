@@ -1,0 +1,32 @@
+﻿@model ForumCMS.Models.Post
+
+@{
+    ViewBag.Title = "Odpowiedź";
+}
+<h2>Utworz odpowiedź do tematu: @Html.ActionLink(Model.Temat.nazwa, "TematSzczegoly", new { id = Model.Temat.id, page = 1 })</h2>
+
+<form method="post" action="@Url.Action("UtworzPost")">
+    @Html.AntiForgeryToken()
+    <input type="hidden" value="@ViewBag.tid2" name="id" />
+    <div class="form-horizontal">
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            <div class="col-12">
+                <textarea class="form-control col-12" name="tresc" id="tresc"></textarea>
+                @Html.ValidationMessageFor(model => model.tresc, "", new { @class = "text-danger" })
+            </div>
+            <script>
+                var editor = new Jodit('#tresc', {
+                    placeholder: 'Treść odpowiedzi',
+                    buttons: ['bold', 'strikethrough', 'underline', 'italic', '|', 'ul', 'ol', '|', 'outdent', 'indent', '|', 'font', 'fontsize', 'brush', 'paragraph', '|', 'image', 'video', 'table', 'link', '|', 'align', 'undo', 'redo', 'symbol']
+                });
+            </script>
+        </div>
+        <div class="form-group">
+            <div class="col-md-10">
+                <input id="submit" type="submit" value="Dodaj odpowiedź" class="btn btn-danger" />
+            </div>
+        </div>
+    </div>
+</form>

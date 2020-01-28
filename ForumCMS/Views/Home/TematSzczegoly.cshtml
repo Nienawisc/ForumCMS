@@ -1,0 +1,118 @@
+﻿@using PagedList.Mvc;
+@using PagedList;
+@model IEnumerable<ForumCMS.Models.Post>
+
+@{
+    ViewBag.Title = "Post";
+}
+<h2>
+    @Html.ActionLink("Forum", "Index")
+    @if (Model.FirstOrDefault() != null)
+    {
+        <span>></span>
+        @Html.ActionLink(Model.First().Temat.Kategoria.nazwa, "Tematy", new { id = Model.First().Temat.idK }, null)
+        <span>></span>
+        @Model.First().Temat.nazwa
+    }
+</h2>
+<div class="table-responsive">
+    <table id="forum" class="table table-striped">
+        @{ int? tid = 0;}
+        @foreach (var item in Model)
+        {
+            if (item.status == 1) { continue; }
+            tid = item.idT;
+            <tr>
+                <td class="hidden-xs">
+                    @{ //zdjecie uzytkownika
+                        <img src="https://www.thispersondoesnotexist.com/image" class="avatar" style="display:block; width:100%; height:auto;">
+                    }
+                    <p class="uzytkownik">@Html.DisplayFor(modelItem => item.User.login)</p>
+                </td>
+                <td style="width:80%">
+                    <div class="time">
+                        @Html.DisplayFor(modelItem => item.czas)
+                        @if (Session["User"] != null)//Edycja postów
+                        {
+                            if ((int)Session["User"] == item.User.id)
+                            {
+                                @Html.ActionLink("Edytuj ", "Edit", new { id = item.id }, new { @id = "editPost" })
+                            }
+                        }
+                        @if (Session["Admin"] != null)//Edycja postów
+                        {
+                            @Html.ActionLink("Edytuj(Admin)", "EditAdmin", new { id = item.id })
+                        }
+                    </div>
+                    <div><p>@Html.Raw(item.tresc)</p></div>
+                    @if (item.czas_edycji != null)
+                    {
+                        <div class="time" style="font-style:italic">
+                            <p class="time">Edytowany: @Html.DisplayFor(modelItem => item.czas_edycji)</p>
+                        </div>
+                    }
+                </td>
+
+            </tr>
+        }
+
+
+    </table>
+</div>
+@{
+    IPagedList pagedlist = null;
+    if (Model.FirstOrDefault() != null)
+    {
+        int page;
+        if (this.ViewContext.RouteData.Values["page"] == null)
+        {
+            page = 1;
+        }
+        else
+        {
+            page = Int32.Parse(this.ViewContext.RouteData.Values["page"].ToString());
+        }
+        if (page <= 0)
+        {
+            page = 1;
+        }
+        pagedlist = Model.First().Temat.Post.Where(t => t.status != 1).ToPagedList(page, (int)ViewBag.paginationPost);
+    }
+}
+<p>
+    @if (Session["User"] != null)
+    {
+        <a href="@Url.Action("Create",new { id=tid} )" id="odpowiedz">Odpowiedz</a>
+    }
+</p>
+@if (pagedlist != null)
+{
+    <p>Strona @(pagedlist.PageCount < pagedlist.PageNumber ? 0 : pagedlist.PageNumber) z @pagedlist.PageCount</p>
+    @Html.PagedListPager(pagedlist, page => Url.Action("Index", new { page }), new PagedListRenderOptions
+    {
+                         DisplayLinkToFirstPage = PagedListDisplayMode.Always,
+                         DisplayLinkToLastPage = PagedListDisplayMode.Always,
+                         DisplayLinkToPreviousPage = PagedListDisplayMode.Always,
+                         DisplayLinkToNextPage = PagedListDisplayMode.Always,
+                         MaximumPageNumbersToDisplay = 5
+                     })
+}
+<div tid="@tid" id="odpowiedzDiv">
+
+</div>
+<script>
+    $("#odpowiedz").click(function (e) {
+        e.preventDefault();
+        $.ajax({
+        url: "@Url.Action("getCreatePage")",
+            type: 'post',
+            data: { id: $("#odpowiedzDiv").attr("tid") },
+        cache: false,
+        success: function (response) {
+            if (response.success) {
+                $("#odpowiedzDiv").html(response.html);
+            }
+        }
+    })
+    })
+</script>
