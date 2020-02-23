@@ -11,8 +11,7 @@ namespace ForumCMS.Models
 {
     using System;
     using System.Collections.Generic;
-    using System.Web.Mvc;
-
+    
     public partial class Post
     {
         public int id { get; set; }
@@ -21,7 +20,6 @@ namespace ForumCMS.Models
         public Nullable<System.DateTime> czas { get; set; }
         public int status { get; set; }
         public Nullable<System.DateTime> czas_edycji { get; set; }
-        [AllowHtml]
         public string tresc { get; set; }
     
         public virtual Status Status1 { get; set; }
